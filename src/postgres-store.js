@@ -406,11 +406,11 @@ export class PostgresFeedStore {
       const nextCursor = chunk.length > 0 ? chunk.at(-1).follower_id : job.last_follower_id;
       const updated = await client.query(
         `UPDATE fanout_jobs
-         SET status = $4,
+         SET status = $4::varchar,
              last_follower_id = $5,
-             lease_token = CASE WHEN $4 = 'completed' THEN NULL ELSE lease_token END,
-             lease_owner = CASE WHEN $4 = 'completed' THEN NULL ELSE lease_owner END,
-             leased_until_ms = CASE WHEN $4 = 'completed' THEN NULL ELSE $3::bigint + $6::bigint END,
+             lease_token = CASE WHEN $4::varchar = 'completed' THEN NULL ELSE lease_token END,
+             lease_owner = CASE WHEN $4::varchar = 'completed' THEN NULL ELSE lease_owner END,
+             leased_until_ms = CASE WHEN $4::varchar = 'completed' THEN NULL ELSE $3::bigint + $6::bigint END,
              updated_at_ms = $3
          WHERE post_id = $1 AND status = 'leased' AND lease_token = $2
          RETURNING attempts`,
