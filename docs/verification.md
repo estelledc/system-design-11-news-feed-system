@@ -18,11 +18,27 @@ With `DATABASE_URL` bound to PostgreSQL 17.6, `npm run check:ci` additionally ex
 
 No test is allowed to skip. CI runs the locked gate on Node 22, 24, and 26 with PostgreSQL 17.6.
 
-## Public evidence
+## Public evidence on 2026-08-19
 
-No public implementation run is claimed in this initial record. Exact commits, run links, test counts, runtime versions, crash
-receipt fields, and raw benchmark observations are added only after the remote run completes. A green syntax/unit result does
-not substitute for the real PostgreSQL gate.
+- SQL type-correction commit `418c64492ebadab4e3ae8f3a2c35e971590fae3a` passed public
+  [CI run 32164944947](https://github.com/estelledc/system-design-11-news-feed-system/actions/runs/32164944947) on
+  Node 22.23.2, 24.19.0, and 26.7.0, each against PostgreSQL 17.6.
+- Every matrix job passed 15 deterministic unit/HTTP tests and 9 real PostgreSQL tests with 0 skipped. The locked install and
+  explicit high-or-greater dependency audit each reported 0 known vulnerabilities.
+- Every runtime smoke durably accepted the API post, committed one non-final chunk, killed the worker with `SIGKILL`, recovered
+  through attempt 2, converged to exactly 5 materialized entries for 5 eligible followers, and rejected the stale token. Fresh
+  reads hid the post after unfollow and deletion; seeded raw identities were absent from child logs; screen-display claims were
+  explicitly 0.
+- The bounded observations used 100 sequential post/job acceptances, one 200-follower fanout in chunks of 50, and 20 session
+  creations merging 40 candidates each. Acceptance rates were 324, 368, and 355 transactions/second; fanout rates were 1,757,
+  2,028, and 1,927 followers/second; session rates were 43, 48, and 44 sessions/second across the three shared runners. These are
+  raw observations, not thresholds or capacity claims.
+
+The first public [CI run 32164851359](https://github.com/estelledc/system-design-11-news-feed-system/actions/runs/32164851359)
+is intentionally retained as a red receipt. All three runtimes passed 15 pure tests and 7 of 9 PostgreSQL tests, then PostgreSQL
+rejected one repeated query parameter because assignment inferred `varchar` while a `CASE` comparison inferred `text`
+(`SQLSTATE 42P08`). Commit `418c644` explicitly casts that parameter without changing fanout behavior. The next run passed 9 of
+9 and continued through the crash smoke and benchmark.
 
 ## Evidence boundary
 
