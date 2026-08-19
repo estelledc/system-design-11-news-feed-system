@@ -20,7 +20,8 @@ No test is allowed to skip. CI runs the locked gate on Node 22, 24, and 26 with 
 
 ## Public evidence on 2026-08-19
 
-- SQL type-correction commit `418c64492ebadab4e3ae8f3a2c35e971590fae3a` passed public
+- The identity-safe rewrite preserved every existing tree, message, and timestamp while mapping the five commits in order: `904489140524da4f33ed55a87524266450c7c4c9` → `c3c0d96d11f4153bfa11ec906b513bbe5be705a4`, `16a60c06513edf54dfd5e94081673bf04a73015b` → `57eb891e96c1fa21bc2908493ad494f98de37882`, `98d22ead889a7f1790aaccc5b39f172abc14c169` → `571d514317be6e93ad8da417c52552be242eed54`, `418c64492ebadab4e3ae8f3a2c35e971590fae3a` → `4b5b703ddfd3af6df2251e969567c480334ff300`, and `707b4ea02eab41fcb3b2442fdb0b0408d355f929` → `527a3e0d14e65632f6def77bed7b47599aab247b`.
+- SQL type-correction commit `4b5b703ddfd3af6df2251e969567c480334ff300` passed the tree-equivalent public
   [CI run 32164944947](https://github.com/estelledc/system-design-11-news-feed-system/actions/runs/32164944947) on
   Node 22.23.2, 24.19.0, and 26.7.0, each against PostgreSQL 17.6.
 - Every matrix job passed 15 deterministic unit/HTTP tests and 9 real PostgreSQL tests with 0 skipped. The locked install and
@@ -37,8 +38,10 @@ No test is allowed to skip. CI runs the locked gate on Node 22, 24, and 26 with 
 The first public [CI run 32164851359](https://github.com/estelledc/system-design-11-news-feed-system/actions/runs/32164851359)
 is intentionally retained as a red receipt. All three runtimes passed 15 pure tests and 7 of 9 PostgreSQL tests, then PostgreSQL
 rejected one repeated query parameter because assignment inferred `varchar` while a `CASE` comparison inferred `text`
-(`SQLSTATE 42P08`). Commit `418c644` explicitly casts that parameter without changing fanout behavior. The next run passed 9 of
+(`SQLSTATE 42P08`). Commit `4b5b703` explicitly casts that parameter without changing fanout behavior. The next run passed 9 of
 9 and continued through the crash smoke and benchmark.
+
+The linked runs above are historical pre-rewrite receipts bound to the old commit objects. Current reachable `main` uses the repository owner's GitHub noreply identity. Rewritten baseline `527a3e0d14e65632f6def77bed7b47599aab247b` passed [CI run 32225039964](https://github.com/estelledc/system-design-11-news-feed-system/actions/runs/32225039964) on Node 22, 24, and 26 with PostgreSQL 17.6 and the full quality gate.
 
 ## Evidence boundary
 
